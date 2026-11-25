@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel | AS MARBLE WORK</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+
+  <!-- Login Screen -->
+  <div id="loginBox" class="min-h-screen flex items-center justify-center px-4">
+    <div class="bg-white p-6 rounded-xl shadow-md w-full max-w-sm border border-slate-200">
+      <h1 class="text-xl font-bold text-slate-900 mb-1">AS MARBLE WORK</h1>
+      <p class="text-xs text-slate-500 mb-4">Admin Dashboard • Enter PIN to Continue</p>
+      <input type="password" id="adminPin" placeholder="Enter Admin PIN (Default: 1234)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm mb-3" />
+      <button onclick="checkPin()" class="w-full bg-slate-900 text-amber-400 font-semibold py-2 rounded-lg text-sm">Unlock Panel</button>
+    </div>
+  </div>
+
+  <!-- Main Admin Dashboard -->
+  <div id="dashboard" class="hidden max-w-5xl mx-auto px-4 py-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-900 text-white p-4 rounded-xl mb-6">
+      <div>
+        <h1 class="font-bold text-lg text-amber-400">AS MARBLE WORK — Admin</h1>
+        <p class="text-xs text-slate-300">Manage Catalog Lots & Customer Inquiries</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="switchTab('products')" id="tabProd" class="bg-amber-500 text-slate-950 font-semibold px-3 py-1.5 rounded-lg text-xs">Marble Stock</button>
+        <button onclick="switchTab('inquiries')" id="tabInq" class="bg-slate-700 text-white font-semibold px-3 py-1.5 rounded-lg text-xs">Inquiries</button>
+      </div>
+    </div>
+
+    <!-- Products Section -->
+    <div id="productsSection" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Add Marble Form -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200 h-fit">
+        <h2 class="font-bold text-base mb-3 text-slate-900">+ Add New Marble Lot</h2>
+        <form id="addProductForm" class="space-y-3">
+          <input type="text" id="pName" required placeholder="Marble Name (e.g. Premium Albeta Slab)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+          <select id="pCategory" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
+            <option value="Albeta">Albeta</option>
+            <option value="Dungri">Dungri</option>
+            <option value="Pure White">Pure White</option>
+            <option value="Kumari">Kumari</option>
+            <option value="Handicraft & Temple">Handicraft & Temple</option>
+          </select>
+          <input type="number" id="pPrice" required placeholder="Rate per Sq. Ft. (₹)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+          <input type="text" id="pSize" placeholder="Lot Size (e.g. 2500 sq.ft / 6x4 ft)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+          <input type="url" id="pImage" placeholder="Image URL (Direct photo link)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+          <textarea id="pDesc" rows="2" placeholder="Description (polish, whiteness, thickness...)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"></textarea>
+          <button type="submit" id="saveProdBtn" class="w-full bg-slate-900 text-amber-400 font-semibold py-2.5 rounded-lg text-sm">Publish to Catalog</button>
+        </form>
+      </div>
+
+      <!-- Existing Stock List -->
+      <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200">
+        <h2 class="font-bold text-base mb-3 text-slate-900">Live Catalog Items</h2>
+        <div id="adminProductList" class="space-y-3 text-sm text-slate-500">Loading stock...</div>
+      </div>
+    </div>
+
+    <!-- Inquiries Section -->
+    <div id="inquiriesSection" class="hidden bg-white p-5 rounded-xl border border-slate-200">
+      <h2 class="font-bold text-base mb-4 text-slate-900">Customer Quote Requests</h2>
+      <div id="inquiryList" class="space-y-4 text-sm text-slate-500">Loading inquiries...</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyASNpSAH_6IUH1kJX5GMTQ7AVB-UcoJIZU",
+      authDomain: "asmarblemakrana-e103a.firebaseapp.com",
+      projectId: "asmarblemakrana-e103a",
+      storageBucket: "asmarblemakrana-e103a.firebasestorage.app",
+      messagingSenderId: "802023837161",
+      appId: "1:802023837161:web:e5ad91d77b7102c5f72778",
+      measurementId: "G-VSFLQZR350"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.checkPin = () => {
+      const pin = document.getElementById('adminPin').value;
+      if (pin === "1234") {
+        document.getElementById('loginBox').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        loadAdminProducts();
+        loadInquiries();
+      } else {
+        alert("Wrong PIN!");
+      }
+    };
+
+    window.switchTab = (tab) => {
+      if (tab === 'products') {
+        document.getElementById('productsSection').classList.remove('hidden');
+        document.getElementById('inquiriesSection').classList.add('hidden');
+        document.getElementById('tabProd').className = "bg-amber-500 text-slate-950 font-semibold px-3 py-1.5 rounded-lg text-xs";
+        document.getElementById('tabInq').className = "bg-slate-700 text-white font-semibold px-3 py-1.5 rounded-lg text-xs";
+      } else {
+        document.getElementById('productsSection').classList.add('hidden');
+        document.getElementById('inquiriesSection').classList.remove('hidden');
+        document.getElementById('tabInq').className = "bg-amber-500 text-slate-950 font-semibold px-3 py-1.5 rounded-lg text-xs";
+        document.getElementById('tabProd').className = "bg-slate-700 text-white font-semibold px-3 py-1.5 rounded-lg text-xs";
+      }
+    };
+
+    document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('saveProdBtn');
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+      try {
+        await addDoc(collection(db, "products"), {
+          name: document.getElementById('pName').value.trim(),
+          category: document.getElementById('pCategory').value,
+          price: Number(document.getElementById('pPrice').value),
+          size: document.getElementById('pSize').value.trim(),
+          image: document.getElementById('pImage').value.trim(),
+          description: document.getElementById('pDesc').value.trim(),
+          createdAt: serverTimestamp()
+        });
+        e.target.reset();
+        loadAdminProducts();
+        alert("Marble lot published!");
+      } catch (err) {
+        alert("Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Publish to Catalog";
+      }
+    });
+
+    async function loadAdminProducts() {
+      const container = document.getElementById('adminProductList');
+      const snap = await getDocs(collection(db, "products"));
+      if (snap.empty) {
+        container.innerHTML = "<p>No products added yet.</p>";
+        return;
+      }
+      container.innerHTML = snap.docs.map(d => {
+        const p = d.data();
+        return `
+          <div class="flex items-center justify-between border border-slate-200 p-3 rounded-lg">
+            <div>
+              <p class="font-bold text-slate-900">${p.name} <span class="text-xs font-normal bg-slate-100 px-2 py-0.5 rounded">${p.category}</span></p>
+              <p class="text-xs text-slate-500">₹${p.price}/sq.ft • ${p.size || 'Standard Lot'}</p>
+            </div>
+            <button onclick="deleteProduct('${d.id}')" class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1 rounded text-xs font-semibold">Delete</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.deleteProduct = async (id) => {
+      if (!confirm("Delete this marble lot?")) return;
+      await deleteDoc(doc(db, "products", id));
+      loadAdminProducts();
+    };
+
+    async function loadInquiries() {
+      const container = document.getElementById('inquiryList');
+      let snap;
+      try {
+        snap = await getDocs(query(collection(db, "inquiries"), orderBy("createdAt", "desc")));
+      } catch (e) {
+        snap = await getDocs(collection(db, "inquiries"));
+      }
+      if (snap.empty) {
+        container.innerHTML = "<p>No customer inquiries yet.</p>";
+        return;
+      }
+      container.innerHTML = snap.docs.map(d => {
+        const q = d.data();
+        const itemsText = (q.items || []).map(i => `${i.name} (₹${i.price})`).join(', ');
+        return `
+          <div class="border border-slate-200 p-4 rounded-lg bg-slate-50">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <h3 class="font-bold text-slate-900">${q.customerName} — <span class="text-amber-700">${q.city}</span></h3>
+                <p class="text-xs text-slate-600">Phone: <a href="tel:${q.phone}" class="underline font-semibold">${q.phone}</a></p>
+              </div>
+              <span class="text-xs px-2.5 py-1 rounded-full font-semibold ${q.status === 'Contacted' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-800'}">${q.status || 'New'}</span>
+            </div>
+            <p class="text-xs text-slate-700 mb-1"><strong>Selected Lots:</strong> ${itemsText}</p>
+            ${q.note ? `<p class="text-xs text-slate-600 mb-3"><strong>Note:</strong> ${q.note}</p>` : ''}
+            <div class="flex gap-2 mt-2">
+              <a href="https://wa.me/91${q.phone.replace(/\D/g,'').slice(-10)}" target="_blank" class="bg-green-600 text-white px-3 py-1 rounded text-xs font-semibold">WhatsApp Customer</a>
+              <button onclick="markDone('${d.id}')" class="bg-slate-800 text-white px-3 py-1 rounded text-xs font-semibold">Mark Contacted</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.markDone = async (id) => {
+      await updateDoc(doc(db, "inquiries", id), { status: "Contacted" });
+      loadInquiries();
+    };
+  </script>
+</body>
+</html>
