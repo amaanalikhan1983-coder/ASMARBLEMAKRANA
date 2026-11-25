@@ -24,18 +24,20 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Prepare Web Assets
+      - name: Prepare Web Assets & Icon
         run: |
-          mkdir -p www
+          mkdir -p www assets
           cp index.html www/
           cp admin.html www/
+          cp IMG_20251221_203305_875.jpg assets/icon.jpg
 
-      - name: Initialize Capacitor Android Project
+      - name: Initialize Capacitor & Generate App Icon
         run: |
           npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets
           npx cap init "AS MARBLE WORK" "com.asmarble.makrana" --web-dir=www
           npx cap add android
+          npx capacitor-assets generate --android
           npx cap sync android
 
       - name: Build Debug APK
