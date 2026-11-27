@@ -2,249 +2,288 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AS MARBLE WORK | Makrana Pure White & Albeta Marble</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AS MARBLE MAKRANA</title>
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
-    .brand-font { font-family: 'Cinzel', serif; }
+    :root { --accent: #d4af37; --bg: #f4f6f9; --card: #ffffff; --text: #1e293b; --muted: #64748b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 90px; }
+
+    header {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #fff;
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    .brand-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .brand-title { font-size: 18px; font-weight: 800; color: var(--accent); }
+    .brand-sub { font-size: 11px; color: #cbd5e1; }
+    .badge-loc { background: rgba(255,255,255,0.12); padding: 4px 10px; border-radius: 20px; font-size: 11px; }
+    .search-box { width: 100%; padding: 10px 14px; border-radius: 10px; border: none; font-size: 14px; outline: none; background: #fff; }
+
+    .cats { display: flex; gap: 8px; overflow-x: auto; padding: 12px 16px; background: #fff; border-bottom: 1px solid #e2e8f0; scrollbar-width: none; }
+    .cats::-webkit-scrollbar { display: none; }
+    .cat-btn { padding: 7px 14px; border-radius: 20px; border: 1px solid #cbd5e1; background: #f8fafc; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+    .cat-btn.active { background: #0f172a; color: var(--accent); border-color: #0f172a; }
+
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 14px; }
+    .card { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.06); display: flex; flex-direction: column; }
+    .card img { width: 100%; height: 140px; object-fit: cover; background: #e2e8f0; }
+    .card-body { padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .tag { font-size: 10px; font-weight: 700; color: #b45309; background: #fef3c7; padding: 2px 6px; border-radius: 4px; width: fit-content; margin-bottom: 4px; }
+    .title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .meta { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+    .price-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+    .price { font-size: 14px; font-weight: 800; color: #0f172a; }
+    .price span { font-size: 10px; font-weight: 500; color: var(--muted); }
+    .add-btn { background: #0f172a; color: var(--accent); border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .add-btn.added { background: #15803d; color: #fff; }
+
+    .cart-bar {
+      position: fixed; bottom: 14px; left: 14px; right: 14px;
+      background: #0f172a; color: #fff; padding: 14px 18px; border-radius: 14px;
+      display: none; justify-content: space-between; align-items: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25); z-index: 200;
+    }
+    .cart-bar button { background: var(--accent); color: #0f172a; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 13px; cursor: pointer; }
+
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 300; align-items: flex-end; }
+    .modal-box { background: #fff; width: 100%; border-radius: 20px 20px 0 0; padding: 20px; max-height: 85vh; overflow-y: auto; }
+    .item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+    .qty-input { width: 72px; padding: 5px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-weight: 700; }
+    .form-input { width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
+    .submit-btn { width: 100%; margin-top: 14px; padding: 12px; background: #15803d; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .close-btn { float: right; background: none; border: none; font-size: 20px; cursor: pointer; }
   </style>
 </head>
-<body class="text-slate-800">
+<body>
 
-  <!-- Header -->
-  <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+  <header>
+    <div class="brand-row">
       <div>
-        <h1 class="brand-font text-xl md:text-2xl font-bold tracking-wider text-amber-400">AS MARBLE WORK</h1>
-        <p class="text-[11px] text-slate-300 tracking-widest uppercase">Makrana, Rajasthan • Direct Quarry & Factory</p>
+        <div class="brand-title">AS MARBLE MAKRANA</div>
+        <div class="brand-sub">Marble Slabs, Handicrafts & Temple Work</div>
       </div>
-      <button onclick="toggleCart()" class="relative bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-4 py-2 rounded-lg text-sm flex items-center gap-2 transition">
-        <span>Inquiry List</span>
-        <span id="cartCount" class="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full">0</span>
-      </button>
+      <div class="badge-loc">📍 Makrana, RJ</div>
     </div>
+    <input type="text" id="searchInput" class="search-box" placeholder="Search Marble, Handicrafts, Temple..." oninput="renderList()" />
   </header>
 
-  <!-- Hero Banner -->
-  <section class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-10 px-4 border-b border-slate-700">
-    <div class="max-w-6xl mx-auto text-center">
-      <span class="inline-block bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs px-3 py-1 rounded-full mb-3">100% Authentic Makrana Marble</span>
-      <h2 class="brand-font text-2xl md:text-4xl font-bold mb-2">Timeless Elegance for Your Dream Space</h2>
-      <p class="text-slate-300 text-sm md:text-base max-w-2xl mx-auto">Albeta, Dungri, Pure White, Kumari Slabs, Custom Temple & Inlay Flooring — Direct Wholesale Rates from Makrana.</p>
-    </div>
-  </section>
-
-  <!-- Category Filter -->
-  <div class="max-w-6xl mx-auto px-4 pt-6">
-    <div id="categoryFilters" class="flex gap-2 overflow-x-auto pb-2">
-      <button onclick="filterCategory('All')" class="cat-btn bg-slate-900 text-white px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">All Varieties</button>
-      <button onclick="filterCategory('Albeta')" class="cat-btn bg-white border border-slate-200 text-slate-700 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">Albeta</button>
-      <button onclick="filterCategory('Dungri')" class="cat-btn bg-white border border-slate-200 text-slate-700 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">Dungri</button>
-      <button onclick="filterCategory('Pure White')" class="cat-btn bg-white border border-slate-200 text-slate-700 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">Pure White</button>
-      <button onclick="filterCategory('Kumari')" class="cat-btn bg-white border border-slate-200 text-slate-700 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">Kumari</button>
-      <button onclick="filterCategory('Handicraft & Temple')" class="cat-btn bg-white border border-slate-200 text-slate-700 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap">Handicraft & Temple</button>
-    </div>
+  <div class="cats" id="catBar">
+    <button class="cat-btn active" onclick="setCat('All', this)">All Items</button>
   </div>
 
-  <!-- Product Grid -->
-  <main class="max-w-6xl mx-auto px-4 py-6">
-    <div id="loadingState" class="text-center py-16 text-slate-500">Loading Makrana Marble Catalog...</div>
-    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
-    <div id="emptyState" class="hidden text-center py-16 text-slate-500">No marble lots found in this category yet.</div>
-  </main>
+  <div class="grid" id="productGrid">
+    <p style="grid-column: span 2; text-align:center; padding:30px; color:#64748b;">Loading catalog...</p>
+  </div>
 
-  <!-- Inquiry Drawer Modal -->
-  <div id="cartModal" class="fixed inset-0 bg-black/60 z-50 hidden flex justify-end">
-    <div class="bg-white w-full max-w-md h-full flex flex-col justify-between p-5 overflow-y-auto">
-      <div>
-        <div class="flex items-center justify-between border-b pb-3 mb-4">
-          <h3 class="font-bold text-lg text-slate-900">Your Quote / Inquiry List</h3>
-          <button onclick="toggleCart()" class="text-slate-500 hover:text-slate-800 text-xl font-bold">&times;</button>
-        </div>
-        <div id="cartItems" class="space-y-3 mb-6"></div>
+  <div class="cart-bar" id="cartBar">
+    <div>
+      <div style="font-size:12px; color:#cbd5e1;"><span id="cartCount">0</span> Items Selected</div>
+      <div style="font-size:16px; font-weight:800; color:#d4af37;">Est. ₹<span id="cartTotal">0</span></div>
+    </div>
+    <button onclick="openModal()">Book / Inquiry →</button>
+  </div>
+
+  <div class="modal" id="orderModal">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <h3>Estimate & Order Inquiry</h3>
+      <div id="cartItems"></div>
+      <div style="margin-top:10px; font-weight:800; text-align:right; font-size:15px;">
+        Total Estimate: ₹<span id="modalTotal">0</span>
       </div>
-
-      <form id="inquiryForm" class="border-t pt-4 space-y-3">
-        <h4 class="font-semibold text-sm text-slate-700">Customer Details for Estimate</h4>
-        <input type="text" id="custName" required placeholder="Your Full Name" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
-        <input type="tel" id="custPhone" required placeholder="WhatsApp / Mobile Number" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
-        <input type="text" id="custCity" required placeholder="Delivery City / State" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
-        <textarea id="custNote" rows="2" placeholder="Approx Sq. Ft. requirement or notes..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"></textarea>
-        <button type="submit" id="submitBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-amber-400 font-semibold py-2.5 rounded-lg text-sm transition">
-          Send Inquiry to AS MARBLE WORK
-        </button>
-      </form>
+      <input type="text" id="custName" class="form-input" placeholder="Your Name / Contractor Name" />
+      <input type="tel" id="custPhone" class="form-input" placeholder="Mobile / WhatsApp Number" />
+      <input type="text" id="custCity" class="form-input" placeholder="Delivery City / Site Address" />
+      <button class="submit-btn" onclick="submitInquiry()">Confirm Inquiry & Send</button>
     </div>
   </div>
-
-  <!-- Footer -->
-  <footer class="bg-slate-900 text-slate-400 text-center py-6 mt-12 text-xs">
-    <p class="text-white font-semibold mb-1">AS MARBLE WORK — Makrana, Rajasthan</p>
-    <p>Proprietor: Sikander Ali • All India Transport Available</p>
-  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyASNpSAH_6IUH1kJX5GMTQ7AVB-UcoJIZU",
+      apiKey: "AIzaSyASNpSAH_61UHikJX5OWTQ7AY0-UcoJIZU",
       authDomain: "asmarblemakrana-e103a.firebaseapp.com",
       projectId: "asmarblemakrana-e103a",
       storageBucket: "asmarblemakrana-e103a.firebasestorage.app",
-      messagingSenderId: "802023837161",
-      appId: "1:802023837161:web:e5ad91d77b7102c5f72778",
+      messagingSenderId: "802823837161",
+      appId: "1:802823837161:web:a5ad91d77b7182c5f72778",
       measurementId: "G-VSFLQZR350"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let allProducts = [];
-    let cart = [];
-    let activeCat = 'All';
+    let allItems = [];
+    let selectedCat = 'All';
+    let cart = {};
 
-    async function loadProducts() {
+    async function init() {
       try {
-        const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
-        const snap = await getDocs(q);
-        allProducts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const [catSnap, prodSnap] = await Promise.all([
+          getDocs(collection(db, "categories")),
+          getDocs(collection(db, "marbles"))
+        ]);
+
+        const catBar = document.getElementById("catBar");
+        catSnap.forEach(d => {
+          const name = d.data().name;
+          const btn = document.createElement("button");
+          btn.className = "cat-btn";
+          btn.innerText = name;
+          btn.onclick = () => setCat(name, btn);
+          catBar.appendChild(btn);
+        });
+
+        allItems = prodSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderList();
       } catch (e) {
-        const snap = await getDocs(collection(db, "products"));
-        allProducts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        document.getElementById("productGrid").innerHTML = `<p style="grid-column:span 2;text-align:center;color:red;">Database error: ${e.message}</p>`;
       }
-      document.getElementById('loadingState').classList.add('hidden');
-      renderProducts();
     }
 
-    window.filterCategory = (cat) => {
-      activeCat = cat;
-      document.querySelectorAll('.cat-btn').forEach(btn => {
-        if (btn.textContent.trim().startsWith(cat) || (cat === 'All' && btn.textContent.includes('All'))) {
-          btn.className = "cat-btn bg-slate-900 text-white px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap";
-        } else {
-          btn.className = "cat-btn bg-white border border-slate-200 text-slate-700 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap";
-        }
+    window.setCat = (cat, btn) => {
+      selectedCat = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderList();
+    };
+
+    window.renderList = () => {
+      const q = document.getElementById("searchInput").value.toLowerCase();
+      const grid = document.getElementById("productGrid");
+      const filtered = allItems.filter(m => {
+        const matchCat = selectedCat === 'All' || m.category === selectedCat;
+        const matchText = (m.name || '').toLowerCase().includes(q) || (m.category || '').toLowerCase().includes(q);
+        return matchCat && matchText;
       });
-      renderProducts();
-    };
 
-    function renderProducts() {
-      const grid = document.getElementById('productGrid');
-      const empty = document.getElementById('emptyState');
-      const filtered = activeCat === 'All' ? allProducts : allProducts.filter(p => p.category === activeCat);
-
-      if (filtered.length === 0) {
-        grid.classList.add('hidden');
-        empty.classList.remove('hidden');
+      if (!filtered.length) {
+        grid.innerHTML = `<p style="grid-column:span 2;text-align:center;padding:30px;color:#64748b;">Abhi is category mein koi item nahi hai.</p>`;
         return;
       }
 
-      empty.classList.add('hidden');
-      grid.classList.remove('hidden');
-      grid.innerHTML = filtered.map(p => `
-        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
-          <div>
-            <div class="h-56 bg-slate-100 relative overflow-hidden">
-              <img src="${p.image || 'https://images.unsplash.com/photo-1618221118493-9cfa1a1c00da?auto=format&fit=crop&w=800&q=80'}" alt="${p.name}" class="w-full h-full object-cover" />
-              <span class="absolute top-3 left-3 bg-slate-900/85 text-amber-400 text-xs font-semibold px-2.5 py-1 rounded">${p.category || 'Makrana'}</span>
-            </div>
-            <div class="p-4">
-              <h3 class="font-bold text-lg text-slate-900">${p.name}</h3>
-              <p class="text-xs text-slate-500 mt-1">${p.size ? 'Lot Size: ' + p.size : 'Fresh Polished Lot'}</p>
-              <p class="text-sm text-slate-600 mt-2 line-clamp-2">${p.description || 'Premium Makrana quality marble slab with natural shine and durability.'}</p>
+      grid.innerHTML = filtered.map(m => {
+        const inCart = !!cart[m.id];
+        const unit = m.unit || 'sq.ft';
+        return `
+          <div class="card">
+            <img src="${m.image || 'https://via.placeholder.com/300x200?text=AS+Marble'}" alt="${m.name}" />
+            <div class="card-body">
+              <div class="tag">${m.category || 'Makrana'}</div>
+              <div class="title">${m.name}</div>
+              <div class="meta">${m.stock || 'Available'}${m.description ? ' • ' + m.description : ''}</div>
+              <div class="price-row">
+                <div class="price">₹${m.price}<span>/${unit}</span></div>
+                <button class="add-btn ${inCart ? 'added' : ''}" onclick="toggleItem('${m.id}')">
+                  ${inCart ? '✓ Added' : '+ Select'}
+                </button>
+              </div>
             </div>
           </div>
-          <div class="px-4 pb-4 pt-2 flex items-center justify-between border-t border-slate-100">
+        `;
+      }).join('');
+    };
+
+    window.toggleItem = (id) => {
+      if (cart[id]) {
+        delete cart[id];
+      } else {
+        const item = allItems.find(x => x.id === id);
+        const defaultQty = (item.unit === 'piece') ? 1 : 100;
+        cart[id] = { item, qty: defaultQty };
+      }
+      updateBar();
+      renderList();
+    };
+
+    function updateBar() {
+      const keys = Object.keys(cart);
+      const bar = document.getElementById("cartBar");
+      if (!keys.length) { bar.style.display = "none"; return; }
+      bar.style.display = "flex";
+      document.getElementById("cartCount").innerText = keys.length;
+      const total = keys.reduce((sum, k) => sum + (cart[k].item.price * cart[k].qty), 0);
+      document.getElementById("cartTotal").innerText = total.toLocaleString('en-IN');
+    }
+
+    window.openModal = () => {
+      const box = document.getElementById("cartItems");
+      const keys = Object.keys(cart);
+      box.innerHTML = keys.map(k => {
+        const { item, qty } = cart[k];
+        const unit = item.unit || 'sq.ft';
+        return `
+          <div class="item-row">
             <div>
-              <span class="text-xs text-slate-400 block">Rate</span>
-              <span class="font-bold text-slate-900 text-base">₹${p.price} <span class="text-xs font-normal text-slate-500">/ sq.ft</span></span>
+              <strong>${item.name}</strong><br/>
+              <small style="color:#64748b;">₹${item.price}/${unit}</small>
             </div>
-            <button onclick="addToCart('${p.id}')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold text-xs px-3.5 py-2 rounded-lg transition">
-              + Add to Quote
-            </button>
+            <div>
+              <input type="number" class="qty-input" value="${qty}" min="1" onchange="changeQty('${k}', this.value)" /> ${unit}
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+      calcModalTotal();
+      document.getElementById("orderModal").style.display = "flex";
+    };
+
+    window.changeQty = (id, val) => {
+      cart[id].qty = Math.max(1, Number(val) || 1);
+      calcModalTotal();
+      updateBar();
+    };
+
+    function calcModalTotal() {
+      const total = Object.keys(cart).reduce((sum, k) => sum + (cart[k].item.price * cart[k].qty), 0);
+      document.getElementById("modalTotal").innerText = total.toLocaleString('en-IN');
     }
 
-    window.addToCart = (id) => {
-      const item = allProducts.find(p => p.id === id);
-      if (!item) return;
-      if (!cart.find(c => c.id === id)) {
-        cart.push(item);
-      }
-      updateCartUI();
-      toggleCart(true);
-    };
+    window.closeModal = () => { document.getElementById("orderModal").style.display = "none"; };
 
-    window.removeFromCart = (id) => {
-      cart = cart.filter(c => c.id !== id);
-      updateCartUI();
-    };
+    window.submitInquiry = async () => {
+      const name = document.getElementById("custName").value.trim();
+      const phone = document.getElementById("custPhone").value.trim();
+      const city = document.getElementById("custCity").value.trim();
+      if (!name || !phone || !city) return alert("Kripya apna naam, mobile number aur city bharein.");
 
-    function updateCartUI() {
-      document.getElementById('cartCount').textContent = cart.length;
-      const container = document.getElementById('cartItems');
-      if (cart.length === 0) {
-        container.innerHTML = `<p class="text-sm text-slate-500 text-center py-6">No marble lots selected yet. Add slabs from the catalog to request a quote.</p>`;
-        return;
-      }
-      container.innerHTML = cart.map(item => `
-        <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-          <div>
-            <p class="font-semibold text-sm text-slate-800">${item.name}</p>
-            <p class="text-xs text-slate-500">₹${item.price}/sq.ft • ${item.category}</p>
-          </div>
-          <button onclick="removeFromCart('${item.id}')" class="text-red-500 text-xs font-semibold hover:underline">Remove</button>
-        </div>
-      `).join('');
-    }
-
-    window.toggleCart = (forceOpen = null) => {
-      const modal = document.getElementById('cartModal');
-      if (forceOpen === true) modal.classList.remove('hidden');
-      else if (forceOpen === false) modal.classList.add('hidden');
-      else modal.classList.toggle('hidden');
-    };
-
-    document.getElementById('inquiryForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (cart.length === 0) {
-        alert("Please add at least one marble item to your inquiry list first.");
-        return;
-      }
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.textContent = "Sending...";
+      const items = Object.keys(cart).map(k => ({
+        name: cart[k].item.name,
+        price: cart[k].item.price,
+        unit: cart[k].item.unit || 'sq.ft',
+        qty: cart[k].qty,
+        subtotal: cart[k].item.price * cart[k].qty
+      }));
+      const totalAmount = items.reduce((s, i) => s + i.subtotal, 0);
 
       try {
         await addDoc(collection(db, "inquiries"), {
-          customerName: document.getElementById('custName').value.trim(),
-          phone: document.getElementById('custPhone').value.trim(),
-          city: document.getElementById('custCity').value.trim(),
-          note: document.getElementById('custNote').value.trim(),
-          items: cart.map(c => ({ id: c.id, name: c.name, price: c.price, category: c.category })),
+          customerName: name,
+          phone,
+          city,
+          items,
+          totalAmount,
           status: "New",
           createdAt: serverTimestamp()
         });
-        alert("Thank you! Your inquiry has been sent to AS MARBLE WORK. We will contact you shortly.");
-        cart = [];
-        updateCartUI();
-        e.target.reset();
-        toggleCart(false);
-      } catch (err) {
-        alert("Error sending inquiry: " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Send Inquiry to AS MARBLE WORK";
+        alert("Aapki inquiry AS MARBLE MAKRANA ko bhej di gayi hai!");
+        cart = {};
+        updateBar();
+        renderList();
+        closeModal();
+      } catch (e) {
+        alert("Error: " + e.message);
       }
-    });
+    };
 
-    updateCartUI();
-    loadProducts();
+    init();
   </script>
 </body>
 </html>
