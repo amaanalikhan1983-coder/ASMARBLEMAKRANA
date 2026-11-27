@@ -2,206 +2,459 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel | AS MARBLE WORK</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-100 text-slate-800 min-h-screen">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AS MARBLE WORK — Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background: #e2e8f0; color: #0f172a; padding: 14px; padding-bottom: 50px; }
 
-  <!-- Login Screen -->
-  <div id="loginBox" class="min-h-screen flex items-center justify-center px-4">
-    <div class="bg-white p-6 rounded-xl shadow-md w-full max-w-sm border border-slate-200">
-      <h1 class="text-xl font-bold text-slate-900 mb-1">AS MARBLE WORK</h1>
-      <p class="text-xs text-slate-500 mb-4">Admin Dashboard • Enter PIN to Continue</p>
-      <input type="password" id="adminPin" placeholder="Enter Admin PIN (Default: 1234)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm mb-3" />
-      <button onclick="checkPin()" class="w-full bg-slate-900 text-amber-400 font-semibold py-2 rounded-lg text-sm">Unlock Panel</button>
+    .top-bar {
+      background: #0f172a;
+      color: #fff;
+      padding: 18px;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .top-bar h1 { font-size: 19px; color: #fbbf24; font-weight: 800; }
+    .top-bar p { font-size: 12px; color: #94a3b8; margin-top: 3px; }
+    .nav-tabs { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #1e293b;
+      color: #cbd5e1;
+    }
+    .tab-btn.active { background: #f59e0b; color: #0f172a; }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .card h2 { font-size: 16px; margin-bottom: 14px; color: #0f172a; }
+
+    .input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 14px;
+      background: #fff;
+      outline: none;
+    }
+    .input:focus, select:focus, textarea:focus { border-color: #f59e0b; }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .upload-box {
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 12px;
+      background: #f8fafc;
+      cursor: pointer;
+    }
+    .upload-box img {
+      max-width: 100%;
+      max-height: 160px;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: none;
+      object-fit: cover;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: #0f172a;
+      color: #fbbf24;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-primary:disabled { opacity: 0.6; }
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+      gap: 10px;
+    }
+    .list-item:last-child { border-bottom: none; }
+    .thumb { width: 54px; height: 54px; border-radius: 8px; object-fit: cover; background: #e2e8f0; flex-shrink: 0; }
+    .item-info { flex: 1; }
+    .item-title { font-weight: 700; font-size: 14px; }
+    .item-sub { font-size: 12px; color: #64748b; margin-top: 2px; }
+
+    .act-btns { display: flex; gap: 6px; }
+    .btn-sm {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-edit { background: #e0f2fe; color: #0369a1; }
+    .btn-del { background: #fee2e2; color: #b91c1c; }
+
+    .section { display: none; }
+    .section.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <h1>AS MARBLE WORK — Admin</h1>
+    <p>Manage Marble, Handicrafts, Categories & Inquiries</p>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('stock', this)">Stock & Add</button>
+      <button class="tab-btn" onclick="switchTab('cats', this)">Categories</button>
+      <button class="tab-btn" onclick="switchTab('inquiries', this)">Inquiries</button>
     </div>
   </div>
 
-  <!-- Main Admin Dashboard -->
-  <div id="dashboard" class="hidden max-w-5xl mx-auto px-4 py-6">
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-900 text-white p-4 rounded-xl mb-6">
-      <div>
-        <h1 class="font-bold text-lg text-amber-400">AS MARBLE WORK — Admin</h1>
-        <p class="text-xs text-slate-300">Manage Catalog Lots & Customer Inquiries</p>
+  <!-- TAB 1: MARBLE & HANDICRAFT STOCK -->
+  <div id="tab-stock" class="section active">
+    <div class="card">
+      <h2 id="formHeading">+ Add New Product / Lot</h2>
+      <input type="hidden" id="editProdId" />
+      <input type="text" id="prodName" class="input" placeholder="Name (e.g. Premium Albeta Slab / Marble Temple)" />
+      
+      <select id="prodCategory">
+        <option value="">Loading categories...</option>
+      </select>
+
+      <div class="row-2">
+        <input type="number" id="prodPrice" class="input" placeholder="Rate (₹)" />
+        <select id="prodUnit">
+          <option value="sq.ft">Per Sq. Ft.</option>
+          <option value="piece">Per Piece</option>
+        </select>
       </div>
-      <div class="flex gap-2">
-        <button onclick="switchTab('products')" id="tabProd" class="bg-amber-500 text-slate-950 font-semibold px-3 py-1.5 rounded-lg text-xs">Marble Stock</button>
-        <button onclick="switchTab('inquiries')" id="tabInq" class="bg-slate-700 text-white font-semibold px-3 py-1.5 rounded-lg text-xs">Inquiries</button>
+
+      <input type="text" id="prodStock" class="input" placeholder="Lot Size / Stock (e.g. 2500 sq.ft or 5 pcs)" />
+
+      <!-- Direct Gallery Picker -->
+      <div class="upload-box" onclick="document.getElementById('galleryInput').click()">
+        <div style="font-weight:700; font-size:13px; color:#0f172a;">📷 Tap to Select Photo from Gallery</div>
+        <div style="font-size:11px; color:#64748b; margin-top:2px;">Direct phone photo upload</div>
+        <input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="handleImageSelect(event)" />
+        <img id="previewImg" alt="Preview" />
       </div>
+
+      <textarea id="prodDesc" rows="2" placeholder="Description (polish, size, carving details...)"></textarea>
+
+      <button class="btn-primary" id="saveProdBtn" onclick="saveProduct()">Publish to Catalog</button>
+      <button id="cancelEditBtn" style="display:none; width:100%; margin-top:8px; padding:10px; border:none; border-radius:10px; background:#cbd5e1; font-weight:700;" onclick="resetProdForm()">Cancel Edit</button>
     </div>
 
-    <!-- Products Section -->
-    <div id="productsSection" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Add Marble Form -->
-      <div class="bg-white p-5 rounded-xl border border-slate-200 h-fit">
-        <h2 class="font-bold text-base mb-3 text-slate-900">+ Add New Marble Lot</h2>
-        <form id="addProductForm" class="space-y-3">
-          <input type="text" id="pName" required placeholder="Marble Name (e.g. Premium Albeta Slab)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
-          <select id="pCategory" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
-            <option value="Albeta">Albeta</option>
-            <option value="Dungri">Dungri</option>
-            <option value="Pure White">Pure White</option>
-            <option value="Kumari">Kumari</option>
-            <option value="Handicraft & Temple">Handicraft & Temple</option>
-          </select>
-          <input type="number" id="pPrice" required placeholder="Rate per Sq. Ft. (₹)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
-          <input type="text" id="pSize" placeholder="Lot Size (e.g. 2500 sq.ft / 6x4 ft)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
-          <input type="url" id="pImage" placeholder="Image URL (Direct photo link)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
-          <textarea id="pDesc" rows="2" placeholder="Description (polish, whiteness, thickness...)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"></textarea>
-          <button type="submit" id="saveProdBtn" class="w-full bg-slate-900 text-amber-400 font-semibold py-2.5 rounded-lg text-sm">Publish to Catalog</button>
-        </form>
-      </div>
-
-      <!-- Existing Stock List -->
-      <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200">
-        <h2 class="font-bold text-base mb-3 text-slate-900">Live Catalog Items</h2>
-        <div id="adminProductList" class="space-y-3 text-sm text-slate-500">Loading stock...</div>
-      </div>
+    <div class="card">
+      <h2>Live Catalog Items</h2>
+      <div id="liveProductsList"><p style="color:#64748b; font-size:13px;">Loading items...</p></div>
     </div>
+  </div>
 
-    <!-- Inquiries Section -->
-    <div id="inquiriesSection" class="hidden bg-white p-5 rounded-xl border border-slate-200">
-      <h2 class="font-bold text-base mb-4 text-slate-900">Customer Quote Requests</h2>
-      <div id="inquiryList" class="space-y-4 text-sm text-slate-500">Loading inquiries...</div>
+  <!-- TAB 2: MANAGE CATEGORIES -->
+  <div id="tab-cats" class="section">
+    <div class="card">
+      <h2>Manage Categories</h2>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="newCatName" class="input" style="margin-bottom:0;" placeholder="New Category (e.g. Handicrafts)" />
+        <button class="btn-primary" style="width:auto; padding:0 18px;" onclick="addCategory()">Add</button>
+      </div>
+      <div id="categoryList" style="margin-top:16px;"></div>
+    </div>
+  </div>
+
+  <!-- TAB 3: CUSTOMER INQUIRIES -->
+  <div id="tab-inquiries" class="section">
+    <div class="card">
+      <h2>Customer Inquiries</h2>
+      <div id="inquiriesList"><p style="color:#64748b; font-size:13px;">Loading inquiries...</p></div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyASNpSAH_6IUH1kJX5GMTQ7AVB-UcoJIZU",
+      apiKey: "AIzaSyASNpSAH_61UHikJX5OWTQ7AY0-UcoJIZU",
       authDomain: "asmarblemakrana-e103a.firebaseapp.com",
       projectId: "asmarblemakrana-e103a",
       storageBucket: "asmarblemakrana-e103a.firebasestorage.app",
-      messagingSenderId: "802023837161",
-      appId: "1:802023837161:web:e5ad91d77b7102c5f72778",
+      messagingSenderId: "802823837161",
+      appId: "1:802823837161:web:a5ad91d77b7182c5f72778",
       measurementId: "G-VSFLQZR350"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    window.checkPin = () => {
-      const pin = document.getElementById('adminPin').value;
-      if (pin === "1234") {
-        document.getElementById('loginBox').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
-        loadAdminProducts();
-        loadInquiries();
-      } else {
-        alert("Wrong PIN!");
-      }
+    let categories = [];
+    let products = [];
+    let currentBase64Image = "";
+
+    window.switchTab = (tab, btn) => {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      btn.classList.add('active');
+      if (tab === 'inquiries') loadInquiries();
     };
 
-    window.switchTab = (tab) => {
-      if (tab === 'products') {
-        document.getElementById('productsSection').classList.remove('hidden');
-        document.getElementById('inquiriesSection').classList.add('hidden');
-        document.getElementById('tabProd').className = "bg-amber-500 text-slate-950 font-semibold px-3 py-1.5 rounded-lg text-xs";
-        document.getElementById('tabInq').className = "bg-slate-700 text-white font-semibold px-3 py-1.5 rounded-lg text-xs";
-      } else {
-        document.getElementById('productsSection').classList.add('hidden');
-        document.getElementById('inquiriesSection').classList.remove('hidden');
-        document.getElementById('tabInq').className = "bg-amber-500 text-slate-950 font-semibold px-3 py-1.5 rounded-lg text-xs";
-        document.getElementById('tabProd').className = "bg-slate-700 text-white font-semibold px-3 py-1.5 rounded-lg text-xs";
-      }
+    window.handleImageSelect = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 650;
+          const scale = Math.min(1, MAX_WIDTH / img.width);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          currentBase64Image = canvas.toDataURL('image/jpeg', 0.7);
+          const prev = document.getElementById('previewImg');
+          prev.src = currentBase64Image;
+          prev.style.display = 'inline-block';
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
     };
 
-    document.getElementById('addProductForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('saveProdBtn');
-      btn.disabled = true;
-      btn.textContent = "Saving...";
+    async function loadCategories() {
       try {
-        await addDoc(collection(db, "products"), {
-          name: document.getElementById('pName').value.trim(),
-          category: document.getElementById('pCategory').value,
-          price: Number(document.getElementById('pPrice').value),
-          size: document.getElementById('pSize').value.trim(),
-          image: document.getElementById('pImage').value.trim(),
-          description: document.getElementById('pDesc').value.trim(),
-          createdAt: serverTimestamp()
-        });
-        e.target.reset();
-        loadAdminProducts();
-        alert("Marble lot published!");
-      } catch (err) {
-        alert("Error: " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Publish to Catalog";
+        const snap = await getDocs(collection(db, "categories"));
+        if (snap.empty) {
+          const defaults = ["Albeta", "Dungri", "Pure White", "Kumari", "Handicraft & Temple"];
+          for (const name of defaults) {
+            await addDoc(collection(db, "categories"), { name });
+          }
+          return loadCategories();
+        }
+        categories = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderCategories();
+      } catch (e) {
+        document.getElementById("prodCategory").innerHTML = `<option value="Albeta">Albeta</option><option value="Handicrafts">Handicrafts</option>`;
+        console.error(e);
       }
-    });
-
-    async function loadAdminProducts() {
-      const container = document.getElementById('adminProductList');
-      const snap = await getDocs(collection(db, "products"));
-      if (snap.empty) {
-        container.innerHTML = "<p>No products added yet.</p>";
-        return;
-      }
-      container.innerHTML = snap.docs.map(d => {
-        const p = d.data();
-        return `
-          <div class="flex items-center justify-between border border-slate-200 p-3 rounded-lg">
-            <div>
-              <p class="font-bold text-slate-900">${p.name} <span class="text-xs font-normal bg-slate-100 px-2 py-0.5 rounded">${p.category}</span></p>
-              <p class="text-xs text-slate-500">₹${p.price}/sq.ft • ${p.size || 'Standard Lot'}</p>
-            </div>
-            <button onclick="deleteProduct('${d.id}')" class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1 rounded text-xs font-semibold">Delete</button>
-          </div>
-        `;
-      }).join('');
     }
 
+    function renderCategories() {
+      const select = document.getElementById("prodCategory");
+      select.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+
+      const list = document.getElementById("categoryList");
+      list.innerHTML = categories.map(c => `
+        <div class="list-item">
+          <div class="item-title">${c.name}</div>
+          <div class="act-btns">
+            <button class="btn-sm btn-edit" onclick="editCategory('${c.id}', '${c.name.replace(/'/g, "\\'")}')">Edit</button>
+            <button class="btn-sm btn-del" onclick="deleteCategory('${c.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.addCategory = async () => {
+      const inp = document.getElementById("newCatName");
+      const name = inp.value.trim();
+      if (!name) return alert("Category ka naam likhein.");
+      try {
+        await addDoc(collection(db, "categories"), { name });
+        inp.value = "";
+        loadCategories();
+      } catch (e) {
+        alert("Category add error: " + e.message);
+      }
+    };
+
+    window.editCategory = async (id, oldName) => {
+      const newName = prompt("Category ka naya naam likhein:", oldName);
+      if (!newName || newName.trim() === "" || newName.trim() === oldName) return;
+      try {
+        await updateDoc(doc(db, "categories", id), { name: newName.trim() });
+        loadCategories();
+      } catch (e) {
+        alert("Edit error: " + e.message);
+      }
+    };
+
+    window.deleteCategory = async (id) => {
+      if (!confirm("Kya aap is category ko delete karna chahte hain?")) return;
+      try {
+        await deleteDoc(doc(db, "categories", id));
+        loadCategories();
+      } catch (e) {
+        alert("Delete error: " + e.message);
+      }
+    };
+
+    window.saveProduct = async () => {
+      const id = document.getElementById("editProdId").value;
+      const name = document.getElementById("prodName").value.trim();
+      const category = document.getElementById("prodCategory").value || "Albeta";
+      const price = Number(document.getElementById("prodPrice").value);
+      const unit = document.getElementById("prodUnit").value;
+      const stock = document.getElementById("prodStock").value.trim();
+      const desc = document.getElementById("prodDesc").value.trim();
+
+      if (!name || !price) return alert("Product ka naam aur rate bharna zaroori hai.");
+
+      const btn = document.getElementById("saveProdBtn");
+      btn.disabled = true;
+      btn.innerText = "Saving...";
+
+      const payload = {
+        name,
+        category,
+        price,
+        unit,
+        stock: stock || "Available",
+        description: desc,
+        updatedAt: serverTimestamp()
+      };
+      if (currentBase64Image) payload.image = currentBase64Image;
+
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Firestore response slow/blocked. Firebase Console me Firestore Rules check karein.")), 10000)
+      );
+
+      try {
+        const op = id
+          ? updateDoc(doc(db, "marbles", id), payload)
+          : addDoc(collection(db, "marbles"), { ...payload, createdAt: serverTimestamp() });
+
+        await Promise.race([op, timeout]);
+        alert(id ? "Product update ho gaya!" : "Product catalog mein publish ho gaya!");
+        resetProdForm();
+        loadProducts();
+      } catch (e) {
+        alert("Save nahi hua: " + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = document.getElementById("editProdId").value ? "Update Product" : "Publish to Catalog";
+      }
+    };
+
+    window.resetProdForm = () => {
+      document.getElementById("editProdId").value = "";
+      document.getElementById("prodName").value = "";
+      document.getElementById("prodPrice").value = "";
+      document.getElementById("prodStock").value = "";
+      document.getElementById("prodDesc").value = "";
+      document.getElementById("galleryInput").value = "";
+      currentBase64Image = "";
+      const prev = document.getElementById("previewImg");
+      prev.style.display = "none";
+      prev.src = "";
+      document.getElementById("formHeading").innerText = "+ Add New Product / Lot";
+      document.getElementById("saveProdBtn").innerText = "Publish to Catalog";
+      document.getElementById("cancelEditBtn").style.display = "none";
+    };
+
+    async function loadProducts() {
+      try {
+        const snap = await getDocs(collection(db, "marbles"));
+        products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const list = document.getElementById("liveProductsList");
+        if (!products.length) {
+          list.innerHTML = `<p style="color:#64748b; font-size:13px;">No products added yet.</p>`;
+          return;
+        }
+        list.innerHTML = products.map(p => `
+          <div class="list-item">
+            <img class="thumb" src="${p.image || 'https://via.placeholder.com/100?text=Marble'}" />
+            <div class="item-info">
+              <div class="item-title">${p.name}</div>
+              <div class="item-sub">${p.category} • ₹${p.price}/${p.unit || 'sq.ft'} • ${p.stock}</div>
+            </div>
+            <div class="act-btns">
+              <button class="btn-sm btn-edit" onclick="editProduct('${p.id}')">Edit</button>
+              <button class="btn-sm btn-del" onclick="deleteProduct('${p.id}')">Del</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        document.getElementById("liveProductsList").innerHTML = `<p style="color:#b91c1c; font-size:13px;">Firestore error: ${e.message}</p>`;
+      }
+    }
+
+    window.editProduct = (id) => {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      document.getElementById("editProdId").value = p.id;
+      document.getElementById("prodName").value = p.name;
+      document.getElementById("prodCategory").value = p.category;
+      document.getElementById("prodPrice").value = p.price;
+      document.getElementById("prodUnit").value = p.unit || 'sq.ft';
+      document.getElementById("prodStock").value = p.stock || '';
+      document.getElementById("prodDesc").value = p.description || '';
+      if (p.image) {
+        const prev = document.getElementById("previewImg");
+        prev.src = p.image;
+        prev.style.display = "inline-block";
+      }
+      document.getElementById("formHeading").innerText = "Edit Product / Lot";
+      document.getElementById("saveProdBtn").innerText = "Update Product";
+      document.getElementById("cancelEditBtn").style.display = "block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     window.deleteProduct = async (id) => {
-      if (!confirm("Delete this marble lot?")) return;
-      await deleteDoc(doc(db, "products", id));
-      loadAdminProducts();
+      if (!confirm("Is item ko catalog se delete karein?")) return;
+      await deleteDoc(doc(db, "marbles", id));
+      loadProducts();
     };
 
     async function loadInquiries() {
-      const container = document.getElementById('inquiryList');
-      let snap;
       try {
-        snap = await getDocs(query(collection(db, "inquiries"), orderBy("createdAt", "desc")));
-      } catch (e) {
-        snap = await getDocs(collection(db, "inquiries"));
-      }
-      if (snap.empty) {
-        container.innerHTML = "<p>No customer inquiries yet.</p>";
-        return;
-      }
-      container.innerHTML = snap.docs.map(d => {
-        const q = d.data();
-        const itemsText = (q.items || []).map(i => `${i.name} (₹${i.price})`).join(', ');
-        return `
-          <div class="border border-slate-200 p-4 rounded-lg bg-slate-50">
-            <div class="flex justify-between items-start mb-2">
-              <div>
-                <h3 class="font-bold text-slate-900">${q.customerName} — <span class="text-amber-700">${q.city}</span></h3>
-                <p class="text-xs text-slate-600">Phone: <a href="tel:${q.phone}" class="underline font-semibold">${q.phone}</a></p>
+        const snap = await getDocs(collection(db, "inquiries"));
+        const box = document.getElementById("inquiriesList");
+        if (snap.empty) {
+          box.innerHTML = `<p style="color:#64748b; font-size:13px;">Abhi tak koi customer inquiry nahi aayi hai.</p>`;
+          return;
+        }
+        box.innerHTML = snap.docs.map(d => {
+          const inq = d.data();
+          const itemsText = (inq.items || []).map(i => `${i.name} (${i.qty || i.sqft} ${i.unit || 'sq.ft'})`).join(', ');
+          return `
+            <div class="list-item" style="flex-direction:column; align-items:flex-start;">
+              <div style="display:flex; justify-content:space-between; width:100%;">
+                <strong>${inq.customerName} (${inq.city})</strong>
+                <strong style="color:#15803d;">₹${(inq.totalAmount || 0).toLocaleString('en-IN')}</strong>
               </div>
-              <span class="text-xs px-2.5 py-1 rounded-full font-semibold ${q.status === 'Contacted' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-800'}">${q.status || 'New'}</span>
+              <div class="item-sub">📞 <a href="tel:${inq.phone}">${inq.phone}</a></div>
+              <div class="item-sub" style="color:#0f172a; margin-top:4px;">Items: ${itemsText}</div>
             </div>
-            <p class="text-xs text-slate-700 mb-1"><strong>Selected Lots:</strong> ${itemsText}</p>
-            ${q.note ? `<p class="text-xs text-slate-600 mb-3"><strong>Note:</strong> ${q.note}</p>` : ''}
-            <div class="flex gap-2 mt-2">
-              <a href="https://wa.me/91${q.phone.replace(/\D/g,'').slice(-10)}" target="_blank" class="bg-green-600 text-white px-3 py-1 rounded text-xs font-semibold">WhatsApp Customer</a>
-              <button onclick="markDone('${d.id}')" class="bg-slate-800 text-white px-3 py-1 rounded text-xs font-semibold">Mark Contacted</button>
-            </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }).join('');
+      } catch (e) {
+        document.getElementById("inquiriesList").innerHTML = `<p style="color:#b91c1c; font-size:13px;">Error: ${e.message}</p>`;
+      }
     }
 
-    window.markDone = async (id) => {
-      await updateDoc(doc(db, "inquiries", id), { status: "Contacted" });
-      loadInquiries();
-    };
+    loadCategories();
+    loadProducts();
   </script>
 </body>
 </html>
